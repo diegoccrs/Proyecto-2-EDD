@@ -12,9 +12,11 @@ public class Nodo<T> {
     /**
      * @return the data
      */
+
     public T getData() {
         return data;
     }
+
 
     /**
      * @param data the data to set
@@ -23,13 +25,15 @@ public class Nodo<T> {
         this.data = data;
     }
 
+
     /**
      * @return the pNext
      */
+
     public Nodo<T> getpNext() {
         return pNext;
     }
-
+    
     /**
      * @param pNext the pNext to set
      */

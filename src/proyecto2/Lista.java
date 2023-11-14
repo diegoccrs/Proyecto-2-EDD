@@ -4,7 +4,6 @@ class Lista<T> {
     private Nodo<T> pFirst;
     private int size = 0;
     
-    
     public void Insertar(T data){
         Nodo<T> newNode = new Nodo<>(data);
         
@@ -20,7 +19,7 @@ class Lista<T> {
         setSize(getSize() + 1);
     }
     
-    
+
     public T get(int index){
         if(getpFirst() == null)
             return null;
@@ -37,7 +36,7 @@ class Lista<T> {
         return null;
     }
     
-    
+
     public void delete(T key){
         if(getpFirst() == null)
             return;
@@ -67,13 +66,16 @@ class Lista<T> {
     /**
      * @return the pFirst
      */
+
     public Nodo<T> getpFirst() {
         return pFirst;
     }
 
+
     /**
      * @param pFirst the pFirst to set
      */
+
     public void setpFirst(Nodo<T> pFirst) {
         this.pFirst = pFirst;
     }
@@ -81,9 +83,11 @@ class Lista<T> {
     /**
      * @return the size
      */
+
     public int getSize() {
         return size;
     }
+
 
     /**
      * @param size the size to set
@@ -95,3 +99,4 @@ class Lista<T> {
     
     
 }
+   
