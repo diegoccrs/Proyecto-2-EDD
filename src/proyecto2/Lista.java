@@ -19,7 +19,6 @@ class Lista<T> {
         setSize(getSize() + 1);
     }
     
-
     public T get(int index){
         if(getpFirst() == null)
             return null;
@@ -36,7 +35,6 @@ class Lista<T> {
         return null;
     }
     
-
     public void delete(T key){
         if(getpFirst() == null)
             return;
@@ -61,42 +59,21 @@ class Lista<T> {
         this.pFirst = null;
     }
 
-
-    
-    /**
-     * @return the pFirst
-     */
-
     public Nodo<T> getpFirst() {
         return pFirst;
     }
-
-
-    /**
-     * @param pFirst the pFirst to set
-     */
 
     public void setpFirst(Nodo<T> pFirst) {
         this.pFirst = pFirst;
     }
 
-    /**
-     * @return the size
-     */
-
     public int getSize() {
         return size;
     }
 
-
-    /**
-     * @param size the size to set
-     */
     public void setSize(int size) {
         this.size = size;
     }
     
-    
-    
+       
 }
-   
