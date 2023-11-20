@@ -4,10 +4,6 @@
     <configuration>
         <data xmlns="http://www.netbeans.org/ns/j2se-project/3">
             <name>proyecto2</name>
-<<<<<<< HEAD
-            <explicit-platform explicit-source-supported="true"/>
-=======
->>>>>>> 362e614c194f68c10a21081b4032c96d9365e1d4
             <source-roots>
                 <root id="src.dir"/>
             </source-roots>

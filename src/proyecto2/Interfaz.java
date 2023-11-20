@@ -1,8 +1,9 @@
 package proyecto2;
 
+import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.util.Scanner;
+import java.io.FileReader;
+import java.io.IOException;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
@@ -15,6 +16,7 @@ public class Interfaz extends javax.swing.JFrame {
      */
     public Interfaz() {
         initComponents();
+        usuarios = new Lista<>();
         this.setLocationRelativeTo(null);
         this.setResizable(false);
         
@@ -24,12 +26,39 @@ public class Interfaz extends javax.swing.JFrame {
 
     // Update the dropdowns with all the users
     private void updateUsers(){
-        Nodo<Usuario> aux = usuarios.getpFirst();
-        while(aux != null){
-            String name = aux.getData().getNombre();
+        userList.removeAllItems();
+        Nodo<Usuario> current = usuarios.getpFirst();
+        while(current != null){
+            String name = current.getData().getNombre();
             userList.addItem(name);
-            aux = aux.getpNext();
+            current = current.getpNext();
         }
+    }
+    
+    private void deleteUser(String user){
+        Nodo<Usuario> current = usuarios.getpFirst();
+        
+        if(current == null)
+            return;
+        
+        if(current.getData().getNombre().equals(user)){
+            usuarios.setpFirst(current.getpNext());
+            usuarios.setSize(usuarios.getSize() - 1);
+        }
+        else{
+            while(current.getpNext() != null){
+                String name = current.getpNext().getData().getNombre();
+
+                if(name.equals(user)){
+                    current.setpNext(current.getpNext().getpNext());
+                    usuarios.setSize(usuarios.getSize() - 1);
+                    break;
+                }
+                current = current.getpNext();
+            }
+        }
+       
+        updateUsers();
     }
     /**
      * This method is called from within the constructor to initialize the form.
@@ -217,7 +246,31 @@ public class Interfaz extends javax.swing.JFrame {
 
     private void loadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loadActionPerformed
         if (fileChooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
-            String filename = fileChooser.getSelectedFile().getAbsolutePath();
+            try {
+                File archivo = new File(fileChooser.getSelectedFile().getAbsolutePath());
+                FileReader lector = new FileReader(archivo);
+                try (java.io.BufferedReader buffer = new BufferedReader(lector)) {
+                    String linea;                  
+                    buffer.readLine();
+                    while ((linea = buffer.readLine()) != null ) {
+                        String[] datosUsuario = linea.split(",");
+                        if(datosUsuario.length == 2){
+                            String nombre = datosUsuario[0];
+                            String prioridad = datosUsuario[1];
+                            if(!nombre.equals(" ") && !prioridad.equals(" ")){
+                                Usuario nuevoUsuario = new Usuario(nombre, prioridad);
+                                System.out.println(nombre);
+                                usuarios.Insertar(nuevoUsuario);
+                            }
+                        }                     
+                    }
+                }
+                
+            }
+            catch(IOException ioe) {
+              ioe.printStackTrace();
+            }
+            
             updateUsers();
         }    
     }//GEN-LAST:event_loadActionPerformed
@@ -237,18 +290,7 @@ public class Interfaz extends javax.swing.JFrame {
 
     private void eliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_eliminarActionPerformed
         String user = String.valueOf(userList.getSelectedItem());
-        
-        Nodo<Usuario> aux = usuarios.getpFirst();
-        while(aux != null){
-            String name = aux.getData().getNombre();
-            if(name.equals(user)){
-                usuarios.delete(aux.getData());
-                break;
-            }
-            aux = aux.getpNext();
-        }
-        
-        userList.removeItem(user);
+        deleteUser(user);
     }//GEN-LAST:event_eliminarActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
