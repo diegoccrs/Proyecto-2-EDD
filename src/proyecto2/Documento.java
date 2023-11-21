@@ -1,7 +1,9 @@
 package proyecto2;
 
 public class Documento {
+
     private String nombre, size, tipo;
+
     
     public Documento(String nombre, String size, String tipo){
         this.nombre = nombre;
@@ -20,4 +22,5 @@ public class Documento {
     public String getTipo(){
         return tipo;
     }
+
 }

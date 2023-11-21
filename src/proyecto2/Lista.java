@@ -39,7 +39,7 @@ class Lista<T> {
         }
         return null;
     }
-    
+
     // Deletes the node given by key
     public void delete(T key){
         if(getpFirst() == null)
@@ -65,8 +65,6 @@ class Lista<T> {
         this.pFirst = null;
     }
 
-
-    
     /**
      * @return the pFirst
      */
