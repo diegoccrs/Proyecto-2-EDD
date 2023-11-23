@@ -1,10 +1,10 @@
 package proyecto2;
 
 public class DocumentoEncolado implements Comparable<DocumentoEncolado> {
-    int etiqueta;
+    long etiqueta;
     Documento documento;
     
-    public DocumentoEncolado(int etiqueta, Documento documento){
+    public DocumentoEncolado(long etiqueta, Documento documento){
         this.etiqueta = etiqueta;
         this.documento = documento;
     }

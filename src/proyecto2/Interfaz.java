@@ -6,17 +6,25 @@ import java.io.FileReader;
 import java.io.IOException;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import java.time.ZonedDateTime;  
+import java.time.temporal.ChronoUnit;
+
+import org.graphstream.graph.*;
+import org.graphstream.graph.implementations.*;
+import org.graphstream.ui.view.*;
 
 public class Interfaz extends javax.swing.JFrame {
     
     Lista<Usuario> usuarios;
     MonticuloBinario<DocumentoEncolado> colaPrioridad;
+    ZonedDateTime inicio;
     
     /**
      * Creates new form Interface
      */
     public Interfaz() {
         initComponents();
+        inicio = ZonedDateTime.now();
         usuarios = new Lista<>();
         colaPrioridad = new MonticuloBinario<>(99);
         this.setLocationRelativeTo(null);
@@ -37,6 +45,39 @@ public class Interfaz extends javax.swing.JFrame {
             userSelectionList.addItem(name);
             current = current.getpNext();
         }
+    }
+    
+    private void showHeapText(){
+        String cola = "Documentos a imprimir: \n\n";
+        int n = colaPrioridad.getSize();
+        
+        for (int i = 1; i <= n; i++) {
+            DocumentoEncolado d = colaPrioridad.getElement(i);
+            cola += d.documento.getNombre() + d.documento.getTipo() +" (Tiempo: " + d.etiqueta + ") \n";
+        }
+        colaImpresion.setText(cola);
+    }
+    
+    private void initGraph(){
+        System.setProperty("org.graphstream.ui", "swing");
+        
+        Graph grafoDibujo = new SingleGraph("Cola de Impresion");
+        grafoDibujo.setAttribute("ui.stylesheet", "node{ fill-color: black; size:30; text-background-mode: plain;}");
+        grafoDibujo.setAttribute("ui.antialias");
+
+        // Add nodes and edges to represent the MinHeap
+        for (int i = 1; i <= colaPrioridad.getSize(); i++) {
+            String nodeName = String.valueOf(i);
+            grafoDibujo.addNode(nodeName).setAttribute("label", colaPrioridad.getElement(i).documento.getNombre() + " (" + colaPrioridad.getElement(i).etiqueta + ")");
+
+            if (i > 1) {
+                String parentName = String.valueOf(i / 2);
+                grafoDibujo.addEdge(nodeName + "-" + parentName, nodeName, parentName);
+            }
+        }
+        
+        Viewer viewer = grafoDibujo.display();
+        viewer.setCloseFramePolicy(Viewer.CloseFramePolicy.HIDE_ONLY);
     }
     
     private void updateDocList(Usuario user){
@@ -115,7 +156,8 @@ public class Interfaz extends javax.swing.JFrame {
         }
        
         updateUsers();
-    }
+    } 
+  
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -154,6 +196,11 @@ public class Interfaz extends javax.swing.JFrame {
         jButton4 = new javax.swing.JButton();
         jLabel11 = new javax.swing.JLabel();
         jButton5 = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        colaImpresion = new javax.swing.JTextArea();
+        jButton1 = new javax.swing.JButton();
+        jButton6 = new javax.swing.JButton();
+        jButton7 = new javax.swing.JButton();
 
         jLabel6.setText("El documento a imprimir es de prioridad ?");
 
@@ -218,6 +265,12 @@ public class Interfaz extends javax.swing.JFrame {
         load.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 loadActionPerformed(evt);
+            }
+        });
+
+        userList.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                userListActionPerformed(evt);
             }
         });
 
@@ -316,6 +369,26 @@ public class Interfaz extends javax.swing.JFrame {
             }
         });
 
+        colaImpresion.setColumns(20);
+        colaImpresion.setRows(5);
+        jScrollPane1.setViewportView(colaImpresion);
+
+        jButton1.setText("Ver Monticulo");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
+        jButton6.setText("Liberar");
+        jButton6.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton6ActionPerformed(evt);
+            }
+        });
+
+        jButton7.setText("Eliminar");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -325,10 +398,12 @@ public class Interfaz extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel3)
-                                .addGap(81, 81, 81)
-                                .addComponent(load))
+                            .addComponent(jLabel11)
+                            .addComponent(jLabel4))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel3)
                             .addComponent(jLabel2)
                             .addComponent(jLabel1)
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
@@ -369,30 +444,33 @@ public class Interfaz extends javax.swing.JFrame {
                                         .addGroup(layout.createSequentialGroup()
                                             .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
                                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                            .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 174, javax.swing.GroupLayout.PREFERRED_SIZE))))))
-                        .addContainerGap(20, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel11)
-                            .addComponent(jLabel4))
-                        .addGap(0, 0, Short.MAX_VALUE))))
+                                            .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 174, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 249, Short.MAX_VALUE)
+                                .addGap(34, 34, 34)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(jButton7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(jButton6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(jButton1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 109, Short.MAX_VALUE))))
+                        .addContainerGap(16, Short.MAX_VALUE))))
             .addGroup(layout.createSequentialGroup()
-                .addGap(160, 160, 160)
-                .addComponent(jButton3)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(160, 160, 160)
+                        .addComponent(jButton3))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(159, 159, 159)
+                        .addComponent(load)))
                 .addGap(0, 0, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(13, 13, 13)
-                        .addComponent(jLabel3)
-                        .addGap(35, 35, 35))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(load)
-                        .addGap(18, 18, 18)))
+                .addGap(13, 13, 13)
+                .addComponent(jLabel3)
+                .addGap(1, 1, 1)
+                .addComponent(load)
+                .addGap(11, 11, 11)
                 .addComponent(jLabel2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -404,7 +482,7 @@ public class Interfaz extends javax.swing.JFrame {
                 .addGap(15, 15, 15)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(userList, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(eliminar))
+                    .addComponent(eliminar, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addComponent(jLabel4)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -432,7 +510,16 @@ public class Interfaz extends javax.swing.JFrame {
                 .addComponent(jLabel10)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(80, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jButton1)
+                        .addGap(18, 18, 18)
+                        .addComponent(jButton6)
+                        .addGap(18, 18, 18)
+                        .addComponent(jButton7)))
+                .addContainerGap(18, Short.MAX_VALUE))
         );
 
         pack();
@@ -488,15 +575,24 @@ public class Interfaz extends javax.swing.JFrame {
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         dialogSave.setVisible(false);
-        boolean isPriority = priorityButton.isSelected();
-        int etiqueta = 0;
+        long etiqueta = inicio.until(ZonedDateTime.now(), ChronoUnit.SECONDS);
         
         String usuarioSeleccionado = userSelectionList.getSelectedItem().toString();
+        Usuario u = getUser(usuarioSeleccionado);
         String docNameSeleccionado = docsList.getSelectedItem().toString();
-         
+        
+        if(priorityButton.isSelected()){
+            etiqueta /= u.getAhorroTiempo();
+            if(etiqueta < 0){
+                etiqueta = 0;
+            }
+        }
+        
         Documento doc = getDocument(usuarioSeleccionado, docNameSeleccionado);
         DocumentoEncolado docEncolado = new DocumentoEncolado(etiqueta, doc);
         colaPrioridad.insertar(docEncolado); 
+        showHeapText();
+        docsList.removeItem(doc.getNombre());
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void prioridadBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_prioridadBoxActionPerformed
@@ -530,12 +626,21 @@ public class Interfaz extends javax.swing.JFrame {
     }//GEN-LAST:event_tamanhoActionPerformed
 
     private void userSelectionListActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_userSelectionListActionPerformed
-        String username = userSelectionList.getSelectedItem().toString();
-        Usuario user = getUser(username);
-        updateDocList(user);
+        if(userSelectionList.getItemCount() > 0){
+            String username = userSelectionList.getSelectedItem().toString();
+            Usuario user = getUser(username);
+            updateDocList(user);
+        }
     }//GEN-LAST:event_userSelectionListActionPerformed
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+        if(userSelectionList.getItemCount() > 0 && docsList.getItemCount() > 0){
+            String nombreUsuario = userSelectionList.getSelectedItem().toString();
+            Usuario u = getUser(nombreUsuario);
+            Documento d = getDocument(nombreUsuario, docsList.getSelectedItem().toString());
+            u.getDocumentos().delete(d);
+            docsList.removeItem(d.getNombre());
+        }
         
     }//GEN-LAST:event_jButton5ActionPerformed
 
@@ -552,6 +657,19 @@ public class Interfaz extends javax.swing.JFrame {
     private void docsListActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_docsListActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_docsListActionPerformed
+
+    private void userListActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_userListActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_userListActionPerformed
+
+    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
+        colaPrioridad.extraerMin();
+        showHeapText();
+    }//GEN-LAST:event_jButton6ActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        initGraph();
+    }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -591,14 +709,18 @@ public class Interfaz extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JToggleButton agregar;
+    private javax.swing.JTextArea colaImpresion;
     private javax.swing.JDialog dialogSave;
     private javax.swing.JComboBox<String> docsList;
     private javax.swing.JButton eliminar;
     private javax.swing.JFileChooser fileChooser;
+    private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
     private javax.swing.JButton jButton5;
+    private javax.swing.JButton jButton6;
+    private javax.swing.JButton jButton7;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
@@ -610,6 +732,7 @@ public class Interfaz extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JButton load;
     private javax.swing.JTextField nameNewUser;
     private javax.swing.JTextField nombreDocumento;

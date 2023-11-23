@@ -1,13 +1,11 @@
 package proyecto2;
 
 public class MonticuloBinario<T extends Comparable<T>> {
-    T[] monticulo;
-    int n, max;
+    private T[] monticulo;
+    private int n, max;
 
     public MonticuloBinario(int n) {
         this.monticulo = (T[]) new Comparable[n + 1];
-        this.monticulo = (T[])new Object[n + 1];
-
         this.max = n;
         this.n = 0;      
     }
@@ -31,7 +29,7 @@ public class MonticuloBinario<T extends Comparable<T>> {
         }
     }
 
-    public T extractMin() {
+    public T extraerMin() {
         if (n == 0) {
             return null;
         }
@@ -65,4 +63,13 @@ public class MonticuloBinario<T extends Comparable<T>> {
             restaurar(smallest);
         }
     }
+    
+    public int getSize(){
+        return n;
+    }
+    
+    public T getElement(int index){
+        return monticulo[index];
+    }
+    
 }
