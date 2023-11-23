@@ -6,8 +6,6 @@ public class MonticuloBinario<T extends Comparable<T>> {
 
     public MonticuloBinario(int n) {
         this.monticulo = (T[]) new Comparable[n + 1];
-        this.monticulo = (T[])new Object[n + 1];
-
         this.max = n;
         this.n = 0;      
     }

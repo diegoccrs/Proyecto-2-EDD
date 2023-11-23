@@ -115,7 +115,8 @@ public class Interfaz extends javax.swing.JFrame {
         }
        
         updateUsers();
-    }
+    } 
+  
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -218,6 +219,12 @@ public class Interfaz extends javax.swing.JFrame {
         load.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 loadActionPerformed(evt);
+            }
+        });
+
+        userList.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                userListActionPerformed(evt);
             }
         });
 
@@ -404,7 +411,7 @@ public class Interfaz extends javax.swing.JFrame {
                 .addGap(15, 15, 15)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(userList, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(eliminar))
+                    .addComponent(eliminar, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addComponent(jLabel4)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -530,12 +537,21 @@ public class Interfaz extends javax.swing.JFrame {
     }//GEN-LAST:event_tamanhoActionPerformed
 
     private void userSelectionListActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_userSelectionListActionPerformed
-        String username = userSelectionList.getSelectedItem().toString();
-        Usuario user = getUser(username);
-        updateDocList(user);
+        if(userSelectionList.getItemCount() > 0){
+            String username = userSelectionList.getSelectedItem().toString();
+            Usuario user = getUser(username);
+            updateDocList(user);
+        }
     }//GEN-LAST:event_userSelectionListActionPerformed
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+        if(userSelectionList.getItemCount() > 0 && docsList.getItemCount() > 0){
+            String nombreUsuario = userSelectionList.getSelectedItem().toString();
+            Usuario u = getUser(nombreUsuario);
+            Documento d = getDocument(nombreUsuario, docsList.getSelectedItem().toString());
+            u.getDocumentos().delete(d);
+            docsList.removeItem(d.getNombre());
+        }
         
     }//GEN-LAST:event_jButton5ActionPerformed
 
@@ -552,6 +568,10 @@ public class Interfaz extends javax.swing.JFrame {
     private void docsListActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_docsListActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_docsListActionPerformed
+
+    private void userListActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_userListActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_userListActionPerformed
 
     /**
      * @param args the command line arguments
