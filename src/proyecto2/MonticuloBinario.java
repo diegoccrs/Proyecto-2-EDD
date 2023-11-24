@@ -1,5 +1,9 @@
 package proyecto2;
 
+/**
+ * Clase utilizada para almacenar la cola de impresion, extiende la clase Comparable para poder
+ * comparar dos elementos T y respetar las condiciones del minHeap
+ */
 public class MonticuloBinario<T extends Comparable<T>> {
     private T[] monticulo;
     private int n, max;
@@ -29,7 +33,7 @@ public class MonticuloBinario<T extends Comparable<T>> {
         }
     }
 
-    public T extraerMin() {
+    public T eliminar_min() {
         if (n == 0) {
             return null;
         }
@@ -42,7 +46,13 @@ public class MonticuloBinario<T extends Comparable<T>> {
 
         return min;
     }
-
+    
+    public void restaurarTodo() {
+        for (int i = n / 2; i >= 1; i--) {
+            restaurar(i);
+        }
+    }
+    
     void restaurar(int index) {
         int smallest = index;
         int leftChild = 2 * index;

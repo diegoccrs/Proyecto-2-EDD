@@ -1,5 +1,8 @@
 package proyecto2;
 
+/**
+ * Clase para almacenar documentos ingresados por los usuarios
+ */
 public class Documento {
     private String nombre, size, tipo;
     

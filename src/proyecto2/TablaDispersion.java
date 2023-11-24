@@ -22,15 +22,15 @@ public class TablaDispersion<K, V> {
     }
     
     /**
-     * Obtiene el índice perteneciente a la key, mediante su hash. 
+     * Obtiene mediante su hash el índice perteneciente a la key. 
      */
      private int getIndex(K key) {
         return Math.abs(key.hashCode()) % capacity;
     }
     
      /**
-      * Inserta el nodo en la lista apropiada según su valor de hash. Si se intenta insertar
-      * un nodo con una llave que que ya se encunetra insertada, se actualiza el valor del nodo.
+      * Agrega el elemento en la lista apropiada según su valor de hash. Si ya se encunetra insertada entonces
+      * se actualiza el valor del nodo.
       */
     public void put(K key, V value) {
         int index = getIndex(key);
@@ -55,9 +55,7 @@ public class TablaDispersion<K, V> {
     }
     
     /**
-     * Mediante el valor de hash de la llave accedemos a la posición de la lista deseada y 
-     * en ella buscamos el nodo con el valor de la llave deseada. El orden de esta operación
-     * en el mejor de los casos es O(1) y en el peor O(n).
+     * Mediante el valor de hash de la llave accedemos al nodo deseado.
      */
     public V get(K key) {
         int index = getIndex(key);
@@ -74,11 +72,7 @@ public class TablaDispersion<K, V> {
 
         return null;
     }
-    
-    /**
-     * Mediante el valor de hash de la llave accedemos a la posición de la lista deseada y 
-     * la recorremos para eliminar el nodo deseado de esta lista.
-     */
+
     public void delete(K key) {
         int index = getIndex(key);
         Lista<HashNode<K, V>> list = bucket[index];

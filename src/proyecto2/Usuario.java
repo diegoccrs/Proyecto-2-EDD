@@ -1,5 +1,9 @@
 package proyecto2;
 
+/**
+ * Clase utilizada para almacenar los usuarios generados, el ahorroTiempo decide cuanto 
+ * se disminuira la etiqueta de tiempo de los documentos encolados dependiendo de la prioridad asignada a estos usuarios
+ */
 public class Usuario {
     private String nombre, prioridad;
     private int ahorroTiempo;
@@ -33,3 +37,4 @@ public class Usuario {
         return ahorroTiempo;
     }
 }
+

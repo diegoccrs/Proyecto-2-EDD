@@ -1,13 +1,13 @@
 package proyecto2;
 
 /**
-* It represents a simple linked list of Nodes of type T
-*/
+ * Clase que almacena una lista de elementos genericos
+ */
 class Lista<T> {
     private Nodo<T> pFirst;
     private int size = 0;
     
-    // Adds a new node to the list
+    // Agrega un nuevo nodo
     public void Insertar(T data){
         Nodo<T> newNode = new Nodo<>(data);
         
@@ -23,7 +23,7 @@ class Lista<T> {
         setSize(getSize() + 1);
     }
     
-    // It gets the node at the position given by index
+    // Retorna el nodo en la posicion index
     public T get(int index){
         if(getpFirst() == null)
             return null;
@@ -40,7 +40,7 @@ class Lista<T> {
         return null;
     }
     
-    // Deletes the node given by key
+    // Elimina el nodo daod por el valor key
     public void delete(T key){
         if(getpFirst() == null)
             return;
@@ -64,8 +64,6 @@ class Lista<T> {
     public Lista() {
         this.pFirst = null;
     }
-
-
     
     /**
      * @return the pFirst
